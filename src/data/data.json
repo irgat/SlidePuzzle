@@ -1,0 +1,50 @@
+{
+  "tiles": [
+    {
+      "id": "3x3",
+      "label": "Easy",
+      "color": "0x00CC00",
+      "img": [
+        {
+          "json": "img/tiles/3x3_1.json",
+          "png": "img/tiles/3x3_1.png"
+        },
+        {
+          "json": "img/tiles/3x3_2.json",
+          "png": "img/tiles/3x3_2.png"
+        },
+        {
+          "json": "img/tiles/3x3_3.json",
+          "png": "img/tiles/3x3_3.png"
+        },
+        {
+          "json": "img/tiles/3x3_4.json",
+          "png": "img/tiles/3x3_4.png"
+        }
+      ]
+    },
+    {
+      "id": "4x4",
+      "label": "Hard",
+      "color": "0xCC0000",
+      "img": [
+        {
+          "json": "img/tiles/4x4_1.json",
+          "png": "img/tiles/4x4_1.png"
+        },
+        {
+          "json": "img/tiles/4x4_2.json",
+          "png": "img/tiles/4x4_2.png"
+        },
+        {
+          "json": "img/tiles/4x4_3.json",
+          "png": "img/tiles/4x4_3.png"
+        },
+        {
+          "json": "img/tiles/4x4_4.json",
+          "png": "img/tiles/4x4_4.png"
+        }
+      ]
+    }
+  ]
+}
