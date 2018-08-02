@@ -14,6 +14,10 @@ class App {
             console.log('====================');
         }
 
+        this.minDimensions = {
+            width: -1,
+            height: -1,
+        }
         this.resetMenuData();
         this.init();
     }
@@ -34,7 +38,11 @@ class App {
 
         //resize listener
         let onResize = (e) => {
-            let dimensions = Utils.getStageDimensions();
+            let stageDimensions = Utils.getStageDimensions();
+            let dimensions = {
+                width: Math.max(stageDimensions.width, this.minDimensions.width),
+                height: Math.max(stageDimensions.height, this.minDimensions.height),
+            };
             this.app.renderer.resize(dimensions.width, dimensions.height);
             this.onResize();
         }
@@ -87,6 +95,7 @@ class App {
         //game
         if (this.menuData.level !== -1 && this.menuData.option !== -1) {
             this.game = new Game(Utils.getGameData(data, this.menuData));
+            this.game.on(CustomEvent.LOADED, this.onResize.bind(this));
             this.game.on(CustomEvent.COMPLETED, this.onGameOver.bind(this));
             this.mainContaniner.addChild(this.game);
         }
@@ -108,7 +117,7 @@ class App {
 
     onResize() {
         let margin = {
-            x: 0,
+            x: 10,
             y: 10,
         };
 
@@ -131,6 +140,10 @@ class App {
             this.game.x = (this.app.renderer.width - this.game.width) / 2;
             this.game.y = pos.y;
             pos.y += this.game.height + margin.y;
+
+            //update bounds
+            this.minDimensions.width = this.game.width + margin.x * 2;
+            this.minDimensions.height = pos.y + margin.y * 2;
         }
     }
 }
