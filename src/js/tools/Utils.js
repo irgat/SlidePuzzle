@@ -4,7 +4,6 @@ class Utils {
             width: window.innerWidth,
             height: window.innerHeight
         };
-        // console.log('dimensions:', dimensions);
         return dimensions;
     }
 

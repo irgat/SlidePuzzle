@@ -5,4 +5,5 @@ export const MOUSE_OVER = 'pointerover';
 export const MOUSE_OUT = 'pointerout';
 
 export const SELECTED = 'SELECTED';
+export const LOADED = 'LOADED';
 export const COMPLETED = 'COMPLETED';
