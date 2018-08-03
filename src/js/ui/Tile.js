@@ -3,12 +3,7 @@ import * as CustomEvent from "../tools/CustomEvent";
 class Tile extends PIXI.Container {
     constructor(id, bg) {
         super();
-
-        this.pos = {
-            x: -1,
-            y: -1,
-        }
-
+        
         this.id = id;
         this.bg = bg;
         this.interactive = true;
@@ -30,8 +25,7 @@ class Tile extends PIXI.Container {
     }
 
     onButtonDown(e) {
-        console.log('<<<<<', this.pos);
-        this.emit(CustomEvent.SELECTED, this.id);
+        this.emit(CustomEvent.SELECTED, this);
     }
 }
 
