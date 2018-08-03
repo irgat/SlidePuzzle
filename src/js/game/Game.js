@@ -1,5 +1,7 @@
 import * as CustomEvent from "../tools/CustomEvent";
 import Tile from "../ui/Tile";
+import * as Utils from "../tools/Utils";
+import { TweenLite } from "gsap";
 
 class Game extends PIXI.Container {
     constructor(data) {
@@ -7,16 +9,8 @@ class Game extends PIXI.Container {
 
         this.data = data;
         this.tiles = new Array();
-        //todo: dynamic
-        this.matrix = [
-            [-1, -1, -1],
-            [-1, -1, -1],
-            [-1, -1, -1]
-        ];
-
-        console.log('===== START GAME =====');
-        console.log(this.data.label);
-        console.log('======================');
+        this.matrix = new Array();
+        this.isMoving = false;
 
         this.init();
     }
@@ -44,15 +38,19 @@ class Game extends PIXI.Container {
             let row = Math.floor(index / sqrt);
             item.x = item.width * col;
             item.y = item.height * row;
-            item.pos.x = row; //position in matrix
-            item.pos.y = col; //position in matrix
             item.on(CustomEvent.SELECTED, this.onSelected.bind(this));
             this.addChild(item);
+
+            if (col === 0) {
+                this.matrix.push(new Array(sqrt).fill(-1)); //increment dimension
+            }
 
             this.matrix[row][col] = item.id; //update matrix
         });
 
-        console.log('>>>>>>>>>>', this.matrix);
+        console.log('===== START GAME =====');
+        console.log(this.matrix);
+        console.log('======================');
 
         let itemW = this.tiles[0].width;
         let totalW = itemW * sqrt;
@@ -67,8 +65,68 @@ class Game extends PIXI.Container {
         this.emit(CustomEvent.LOADED);
     }
 
-    onSelected(id) {
-        console.log('###', id);
+    onSelected(selectedItem) {
+        if (!this.isMoving) {
+            let position = Utils.default.getMatrixPos(selectedItem.id, this.matrix);
+            let possibleMoves = Utils.default.getPossibleMoves(position, this.matrix);
+            if (possibleMoves.length > 0) {
+                this.moveTile(selectedItem, position, possibleMoves[0]);
+            }
+        }
+    }
+
+    moveTile(selectedItem, currentPosition, moveData) {
+        console.log('===== MOVE =====');
+        console.log('selectedItem:', selectedItem);
+        console.log('currentPosition:', currentPosition);
+        console.log('moveData:', moveData);
+        console.log('================');
+        let startAnimation = () => this.isMoving = true;
+        switch (moveData.side) {
+            case Utils.UP:
+                TweenLite.to(selectedItem, .25, {
+                    y: selectedItem.y - selectedItem.height,
+                    onStart: startAnimation,
+                    onCompleteParams: [selectedItem, currentPosition, moveData],
+                    onComplete: this.onAnimationComplete.bind(this)
+                });
+                break;
+            case Utils.DOWN:
+                TweenLite.to(selectedItem, .25, {
+                    y: selectedItem.y + selectedItem.height,
+                    onStart: startAnimation,
+                    onCompleteParams: [selectedItem, currentPosition, moveData],
+                    onComplete: this.onAnimationComplete.bind(this)
+                });
+                break;
+            case Utils.LEFT:
+                TweenLite.to(selectedItem, .25, {
+                    x: selectedItem.x - selectedItem.width,
+                    onStart: startAnimation,
+                    onCompleteParams: [selectedItem, currentPosition, moveData],
+                    onComplete: this.onAnimationComplete.bind(this)
+                });
+                break;
+            case Utils.RIGHT:
+                TweenLite.to(selectedItem, .25, {
+                    x: selectedItem.x + selectedItem.width,
+                    onStart: startAnimation,
+                    onCompleteParams: [selectedItem, currentPosition, moveData],
+                    onComplete: this.onAnimationComplete.bind(this)
+                });
+                break;
+            default:
+                break;
+        }
+    }
+
+    onAnimationComplete(selectedItem, currentPosition, moveData) {
+        this.matrix[currentPosition.row][currentPosition.col] = -1;
+        this.matrix[moveData.row][moveData.col] = selectedItem.id;
+        this.isMoving = false;
+        console.log('===== UPDATE =====');
+        console.log(this.matrix);
+        console.log('==================');
     }
 }
 
