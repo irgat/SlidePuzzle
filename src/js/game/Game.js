@@ -23,6 +23,11 @@ class Game extends PIXI.Container {
     }
 
     onAssetsLoaded(loader, resources) {
+        console.log('===== START GAME =====');
+        console.log(this.data.label);
+        console.log(this.matrix);
+        console.log('======================');
+
         let frames = resources.tiles.data.frames;
         let assets = new Array();
 
@@ -32,7 +37,11 @@ class Game extends PIXI.Container {
         let sqrt = Math.ceil(Math.sqrt(assets.length)); //get row/column count
 
         this.tiles = assets.sort().map((id, index) => new Tile(index, new PIXI.Sprite(PIXI.utils.TextureCache[id]))); //create tiles
+        /////////////
+        //TEST MODE//
+        /////////////
         this.tiles.sort(() => Math.random() - .5); //shuffle tiles
+        //comment line above for testing
         this.tiles.forEach((item, index) => {
             let col = index % sqrt;
             let row = Math.floor(index / sqrt);
@@ -48,10 +57,6 @@ class Game extends PIXI.Container {
             this.matrix[row][col] = item.id; //update matrix
         });
 
-        console.log('===== START GAME =====');
-        console.log(this.matrix);
-        console.log('======================');
-
         let itemW = this.tiles[0].width;
         let totalW = itemW * sqrt;
 
@@ -63,6 +68,12 @@ class Game extends PIXI.Container {
         this.addChildAt(bg, 0);
 
         this.emit(CustomEvent.LOADED);
+
+        /////////////
+        //TEST MODE//
+        /////////////
+        // this.onSelected(this.tiles[this.tiles.length - 1]);
+        //remove comment above for testing
     }
 
     onSelected(selectedItem) {
@@ -76,11 +87,11 @@ class Game extends PIXI.Container {
     }
 
     moveTile(selectedItem, currentPosition, moveData) {
-        console.log('===== MOVE =====');
+        /* console.log('===== MOVE =====');
         console.log('selectedItem:', selectedItem);
         console.log('currentPosition:', currentPosition);
         console.log('moveData:', moveData);
-        console.log('================');
+        console.log('================'); */
         let startAnimation = () => this.isMoving = true;
         switch (moveData.side) {
             case Utils.UP:
@@ -123,10 +134,13 @@ class Game extends PIXI.Container {
     onAnimationComplete(selectedItem, currentPosition, moveData) {
         this.matrix[currentPosition.row][currentPosition.col] = -1;
         this.matrix[moveData.row][moveData.col] = selectedItem.id;
-        this.isMoving = false;
-        console.log('===== UPDATE =====');
-        console.log(this.matrix);
-        console.log('==================');
+
+        let isGameOver = Utils.default.isGameOver(this.matrix);
+        this.isMoving = isGameOver;
+
+        if (isGameOver) {
+            this.emit(CustomEvent.GAME_OVER);
+        }
     }
 }
 

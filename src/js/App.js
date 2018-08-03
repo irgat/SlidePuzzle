@@ -96,7 +96,7 @@ class App {
         if (this.menuData.level !== -1 && this.menuData.option !== -1) {
             this.game = new Game(Utils.getGameData(data, this.menuData));
             this.game.on(CustomEvent.LOADED, this.onResize.bind(this));
-            this.game.on(CustomEvent.COMPLETED, this.onGameOver.bind(this));
+            this.game.on(CustomEvent.GAME_OVER, this.onGameOver.bind(this));
             this.mainContaniner.addChild(this.game);
         }
 

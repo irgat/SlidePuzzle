@@ -48,6 +48,20 @@ class Utils {
 
         return possibleMoves;
     }
+
+    static isGameOver(matrix) {
+        matrix = [].concat(...matrix); //flatten the matrix
+        
+        let input = [...matrix];
+        let output = [...matrix].sort((a, b) => a - b); //sort the matrix
+        
+        input.pop(); //remove the last item, expected -1
+        output.shift(); //remove the first item, expected -1
+        
+        let result = input.toString() === output.toString(); //compare input and output
+        
+        return result;
+    }
 }
 
 export const UP = 'UP';
