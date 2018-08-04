@@ -4,10 +4,11 @@ import * as Utils from "../tools/Utils";
 import { TweenLite } from "gsap";
 
 class Game extends PIXI.Container {
-    constructor(data) {
+    constructor(data, testMode = true) {
         super();
 
         this.data = data;
+        this.testMode = testMode;
         this.tiles = new Array();
         this.matrix = new Array();
         this.isMoving = false;
@@ -23,10 +24,10 @@ class Game extends PIXI.Container {
     }
 
     onAssetsLoaded(loader, resources) {
-        console.log('===== START GAME =====');
+        /* console.log('===== START GAME =====');
         console.log(this.data.label);
         console.log(this.matrix);
-        console.log('======================');
+        console.log('======================'); */
 
         let frames = resources.tiles.data.frames;
         let assets = new Array();
@@ -37,11 +38,9 @@ class Game extends PIXI.Container {
         let sqrt = Math.ceil(Math.sqrt(assets.length)); //get row/column count
 
         this.tiles = assets.sort().map((id, index) => new Tile(index, new PIXI.Sprite(PIXI.utils.TextureCache[id]))); //create tiles
-        /////////////
-        //TEST MODE//
-        /////////////
-        this.tiles.sort(() => Math.random() - .5); //shuffle tiles
-        //comment line above for testing
+        if (!this.testMode) {
+            this.tiles.sort(() => Math.random() - .5); //shuffle tiles
+        }
         this.tiles.forEach((item, index) => {
             let col = index % sqrt;
             let row = Math.floor(index / sqrt);
@@ -68,12 +67,6 @@ class Game extends PIXI.Container {
         this.addChildAt(bg, 0);
 
         this.emit(CustomEvent.LOADED);
-
-        /////////////
-        //TEST MODE//
-        /////////////
-        // this.onSelected(this.tiles[this.tiles.length - 1]);
-        //remove comment above for testing
     }
 
     onSelected(selectedItem) {
@@ -139,6 +132,10 @@ class Game extends PIXI.Container {
         this.isMoving = isGameOver;
 
         if (isGameOver) {
+            /* console.log('=====================');
+            console.log('===== GAME OVER =====');
+            console.log('====================='); */
+
             this.emit(CustomEvent.GAME_OVER);
         }
     }

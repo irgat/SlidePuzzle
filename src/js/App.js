@@ -5,6 +5,7 @@ import data from '../data/data.json';
 import Menu from './ui/Menu';
 import Game from './game/Game';
 import Utils from './tools/Utils';
+import GameOver from './ui/GameOver';
 
 class App {
     constructor() {
@@ -110,9 +111,18 @@ class App {
     }
 
     onGameOver() {
-        console.log('=====================');
-        console.log('===== GAME OVER =====');
-        console.log('=====================');
+        this.gameOver = new GameOver();
+        this.gameOver.on(CustomEvent.SELECTED, this.onSelectRestart.bind(this));
+        this.mainContaniner.addChild(this.gameOver);
+
+        this.onResize();
+    }
+
+    onSelectRestart() {
+        if (this.gameOver) {
+            this.mainContaniner.removeChild(this.gameOver);
+        }
+        this.onSelectLevel(this.levelMenu.reset());
     }
 
     onResize() {
@@ -144,6 +154,10 @@ class App {
             //update bounds
             this.minDimensions.width = this.game.width + margin.x * 2;
             this.minDimensions.height = pos.y + margin.y * 2;
+        }
+
+        if (this.gameOver) {
+            this.gameOver.onResize(this.app.renderer.width, this.app.renderer.height);
         }
     }
 }
