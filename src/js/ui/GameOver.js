@@ -34,7 +34,7 @@ class GameOver extends PIXI.Container {
         });
 
         //label
-        let label = new PIXI.Text('CONGRATULATIONS!\n\nYOU WIN ; ))', style);
+        let label = new PIXI.Text('CONGRATULATIONS!\n\nYOU WIN', style);
         this.mainContainer.addChild(label);
 
         //reset label
