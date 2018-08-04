@@ -4,7 +4,7 @@ import * as Utils from "../tools/Utils";
 import { TweenLite } from "gsap";
 
 class Game extends PIXI.Container {
-    constructor(data, testMode = true) {
+    constructor(data, testMode = false) {
         super();
 
         this.data = data;
