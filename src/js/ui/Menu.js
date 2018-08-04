@@ -1,5 +1,5 @@
 import * as CustomEvent from "../tools/CustomEvent";
-import Button from "./Button";
+import Button from "./MenuButton";
 
 class Menu extends PIXI.Container {
     constructor(data, isRadioGroup = false) {
@@ -28,9 +28,9 @@ class Menu extends PIXI.Container {
         });
     }
 
-    onSelected(id) {
+    onSelected(target) {
         if (this.isRadioGroup) {
-            this.updateSelectedItem(id);
+            this.updateSelectedItem(target.id);
         }
         this.emit(CustomEvent.SELECTED, this.getSelectedItems().map(item => item.id));
     }
@@ -43,6 +43,11 @@ class Menu extends PIXI.Container {
 
     getSelectedItems() {
         return this.items.filter(item => item.isSelected);
+    }
+
+    reset() {
+        this.items.forEach(item => item.isSelected = false);
+        return this.getSelectedItems();
     }
 }
 
